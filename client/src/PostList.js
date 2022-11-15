@@ -7,15 +7,17 @@ const PostList = () => {
   const [posts, setPosts] = useState({});
 
   const fetchPosts = async () => {
-    const res = await axios.get("http://localhost:4000/posts");
-
+    //Get posts from the query service
+    const res = await axios.get("http://localhost:4002/posts");
+    //Test to ensure we are getting the data
+    //console.log(res.data);
     setPosts(res.data);
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
-
+  //Iterate over the list posts
   const renderedPosts = Object.values(posts).map((post) => {
     return (
       <div
@@ -25,7 +27,7 @@ const PostList = () => {
       >
         <div className="card-body">
           <h3>{post.title}</h3>
-          <CommentList postId={post.id} />
+          <CommentList comments={post.comments} />
           <CommentCreate postId={post.id} />
         </div>
       </div>
