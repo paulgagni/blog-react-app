@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+#Deployment object
+kind: Deployment
+metadata: 
+  name: moderation-depl
+#Deployment behavior
+spec:
+#Nunber of pods to create running a particular image
+  replicas: 1
+  #Find all the types of pods that have been created and look for the moderation pod
+  selector:
+    matchLabels:
+      app: moderation
+  #Exact config of pod we want the deployment to create
+  template:
+    metadata: 
+      labels:  
+        app: moderation
+    #Configuration
+    spec:
+      containers:
+        - name: moderation
+          image: paulgagni/moderation
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: moderation-clusterip-srv
+spec:
+  selector:
+    app: moderation
+  #This is optional as the default will be ClusterIP if not defined
+  type: ClusterIP
+  ports:
+    - name: moderation
+      protocol: TCP
+      port: 4003
+      targetPort: 4003

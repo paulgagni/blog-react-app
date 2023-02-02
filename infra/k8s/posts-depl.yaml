@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+#Deployment object
+kind: Deployment
+metadata: 
+  name: posts-depl
+#Deployment behavior
+spec:
+#Nunber of pods to create running a particular image
+  replicas: 1
+  #Find all the types of pods that have been created and look for the posts pod
+  selector:
+    matchLabels:
+      app: posts
+  #Exact config of pod we want the deployment to create
+  template:
+    metadata: 
+      labels:  
+        app: posts
+    #Configuration
+    spec:
+      containers:
+        - name: posts
+          image: paulgagni/posts
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: posts-clusterip-srv
+spec:
+  selector:
+    app: posts
+  #This is optional as the default will be ClusterIP if not defined
+  type: ClusterIP
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 4000
+      targetPort: 4000

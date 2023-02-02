@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  #annotation section helpe the ingress controller understand routing rules, 
+  #ingress controller will continuously scan all the different objects or all the different config files
+  #we're throwing into our cluster 
+  annotations:
+    #find one that has this exact annotation When it finds this, the ingress controller is going to say, Oh, this must thing, this thing must have some routing rules for me
+    kubernetes.io/ingress.class: nginx
+    #We need this in order to use regular expressions in the path expressions (Comments)
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  #Rules is going to have all the different routing rules that we want to apply to teach the ingress controller how to take incoming traffic and route them off to our different pods
+  rules:
+    #Ingress nginx is set up assuming that you might be hosting many different apps at different domains. So that's what this host property right here is all about.
+    - host: posts.com
+      http:
+        #first routing rule that we're going to set up is going to take incoming traffic and send it off to our post service
+        paths:
+          #send it to the post cluster IP service because the cluster IP services are how we communicate between different things inside of our cluster
+          #Paths are ordered in greatest importance to least important.  
+          #The last path /?(.*) will only try after trying to match all the other paths much like a if elseif statement
+          - path: /posts/create
+            pathType: Prefix
+            backend:
+              service:
+                name: posts-clusterip-srv
+                port:
+                  number: 4000
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: query-clusterip-srv
+                port:
+                  number: 4002
+          - path: /posts/?(.*)/comments
+            pathType: Prefix
+            backend:
+              service:
+                name: comments-clusterip-srv 
+                port:
+                  number: 4001
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: client-clusterip-srv
+                port:
+                  number: 3000

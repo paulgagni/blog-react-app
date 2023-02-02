@@ -60,7 +60,7 @@ app.listen(4002, async () => {
   console.log("Listening on 4002");
   try {
     //Get all the events that have occurred over time
-    const res = await axios.get("http://localhost:4005/events");
+    const res = await axios.get("http://event-bus-srv:4005/events");
 
     //Iterate through all the events that have occured 
     for (let event of res.data) {

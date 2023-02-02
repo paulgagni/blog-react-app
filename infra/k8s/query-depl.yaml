@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+#Deployment object
+kind: Deployment
+metadata: 
+  name: query-depl
+#Deployment behavior
+spec:
+#Nunber of pods to create running a particular image
+  replicas: 1
+  #Find all the types of pods that have been created and look for the query pod
+  selector:
+    matchLabels:
+      app: query
+  #Exact config of pod we want the deployment to create
+  template:
+    metadata: 
+      labels:  
+        app: query
+    #Configuration
+    spec:
+      containers:
+        - name: query
+          image: paulgagni/query
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: query-clusterip-srv
+spec:
+  selector:
+    app: query
+  #This is optional as the default will be ClusterIP if not defined
+  type: ClusterIP
+  ports:
+    - name: query
+      protocol: TCP
+      port: 4002
+      targetPort: 4002

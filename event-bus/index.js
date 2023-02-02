@@ -18,19 +18,19 @@ app.post("/events", (req, res) => {
   events.push(event);
 
   //Make post request for the posts service to running services of the event that is passed
-  axios.post("http://localhost:4000/events", event).catch((err) => {
+  axios.post("http://posts-clusterip-srv:4000/events", event).catch((err) => {
     console.log(err.message);
   });
   //Make post request for the comments service to running services of the event that is passed
-  axios.post("http://localhost:4001/events", event).catch((err) => {
+  axios.post("http://comments-clusterip-srv:4001/events", event).catch((err) => {
     console.log(err.message);
   });
   //Make post request for the query service to running services of the event that is passed
-  axios.post("http://localhost:4002/events", event).catch((err) => {
+  axios.post("http://query-clusterip-srv:4002/events", event).catch((err) => {
     console.log(err.message);
   });
   //Make post request for the moderation service to running services of the event that is passed
-  axios.post("http://localhost:4003/events", event).catch((err) => {
+  axios.post("http://moderation-clusterip-srv:4003/events", event).catch((err) => {
     console.log(err.message);
   });
   res.send({ status: "OK" });

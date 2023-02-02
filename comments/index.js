@@ -35,7 +35,7 @@ app.post('/posts/:id/comments', async (req, res) => {
   //Assign comments array back to the given post inside of our commentsByPostId object
   commentsByPostId[req.params.id] = comments;
   //Post request to where event broker is running - pass status flag for moderation feature
-  await axios.post('http://localhost:4005/events', {
+  await axios.post('http://event-bus-srv:4005/events', {
     type: 'CommentCreated',
     data: {
       id: commentId,
@@ -68,7 +68,7 @@ app.post('/events', async (req, res) => {
     //Update the status
     comment.status = status;
     //Put the event together and send over to the event-bus
-    await axios.post('http://localhost:4005/events', {
+    await axios.post('http://event-bus-srv:4005/events', {
       type: 'CommentUpdated',
       data: { 
         id,
