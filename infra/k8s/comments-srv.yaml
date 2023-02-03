@@ -1,0 +1,18 @@
+apiVersion: v1 
+kind: Service
+metadata:
+  name: comments-srv
+spec:
+  #NodePort makes pods accessible from outside the cluster (Dev purposes)
+  type: NodePort
+  selector:
+    app: comments
+  #Ports that we want to expose on the target pod
+  ports:
+  #The comments service is listening for traffic on port 4001 (index.js)
+    - name: comments
+      protocol: TCP
+      #Open access on port 4001. This is the NodePort service port - Most of the time the port and targetport are going to be the same.
+      port: 4001
+      #Actual port the app is listening for traffic - The NodePort service redirects traffic to this port
+      targetPort: 4001

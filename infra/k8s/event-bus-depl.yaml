@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+#Deployment object
+kind: Deployment
+metadata: 
+  name: event-bus-depl
+#Deployment behavior
+spec:
+#Nunber of pods to create running a particular image
+  replicas: 1
+  #Find all the types of pods that have been created and look for the event-bus pod
+  selector:
+    matchLabels:
+      app: event-bus
+  #Exact config of pod we want the deployment to create
+  template:
+    metadata: 
+      labels:  
+        app: event-bus
+    #Configuration
+    spec:
+      containers:
+        - name: event-bus
+          image: paulgagni/event-bus
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: event-bus-srv
+spec:
+  selector:
+    app: event-bus
+  #This is optional as the default will be ClusterIP if not defined
+  type: ClusterIP
+  ports:
+    - name: event-bus
+      protocol: TCP
+      port: 4005
+      targetPort: 4005

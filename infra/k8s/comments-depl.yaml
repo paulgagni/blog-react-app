@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+#Deployment object
+kind: Deployment
+metadata: 
+  name: comments-depl
+#Deployment behavior
+spec:
+#Nunber of pods to create running a particular image
+  replicas: 1
+  #Find all the types of pods that have been created and look for the comments pod
+  selector:
+    matchLabels:
+      app: comments
+  #Exact config of pod we want the deployment to create
+  template:
+    metadata: 
+      labels:  
+        app: comments
+    #Configuration
+    spec:
+      containers:
+        - name: comments
+          image: paulgagni/comments
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: comments-clusterip-srv
+spec:
+  selector:
+    app: comments
+  #This is optional as the default will be ClusterIP if not defined
+  type: ClusterIP
+  ports:
+    - name: comments
+      protocol: TCP
+      port: 4001
+      targetPort: 4001
